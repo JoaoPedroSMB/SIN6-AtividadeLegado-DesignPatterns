@@ -1,24 +1,23 @@
 package com.exemplo.notificacao.service;
 
 import com.exemplo.notificacao.model.Pedido;
+import com.exemplo.notificacao.Interface.INotifica;
+import com.exemplo.notificacao.decorator.EmailDecorator;
+import com.exemplo.notificacao.decorator.SMSDecorator;
+import com.exemplo.notificacao.decorator.PushDecorator;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificacaoService {
 
-    private final EmailService emailService;
-    private final SmsService smsService;
-    private final PushService pushService;
-
-    public NotificacaoService(EmailService emailService, SmsService smsService, PushService pushService) {
-        this.emailService = emailService;
-        this.smsService = smsService;
-        this.pushService = pushService;
-    }
-
     public void enviarNotificacoes(Pedido pedido) {
-        emailService.enviar(pedido);
-        smsService.enviar(pedido);
-        pushService.enviar(pedido);
+        INotifica notificador = new EmailDecorator(
+            new SMSDecorator(
+                new PushDecorator(
+                    msg -> {}
+                )
+            )
+        );
+        notificador.envia("Pedido criado para o cliente: " + pedido.getCliente() + ", valor: " + pedido.getValor());
     }
 }
