@@ -10,6 +10,7 @@ public class PedidoService {
 
     public PedidoService(NotificacaoService notificacaoService) {
         this.notificacaoService = notificacaoService;
+        
     }
 
     public void criarPedido(String cliente, double valor) {
